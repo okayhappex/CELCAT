@@ -1,4 +1,4 @@
-const BASEURL = 'http://constantly-unbiaised-bluebird.ngrok-free.app/edt';
+const BASEURL = 'https://constantly-unbiaised-bluebird.ngrok-free.app/edt';
 let CALSCOPE = new Date();
 let GRPSCOPE = 1;
 

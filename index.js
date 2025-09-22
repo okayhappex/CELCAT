@@ -1,4 +1,4 @@
-const BASEURL = 'https://constantly-unbiaised-bluebird.ngrok-free.app/edt';
+const BASEURL = 'https://celcat-back.onrender.com/edt';
 let CALSCOPE = new Date();
 let GRPSCOPE = 1;
 
@@ -330,4 +330,5 @@ async function fstload() {
         load_buttons(0, 4, 1)
         await charger_calendrier(1, 0, 1);
     }
+
 }

@@ -171,7 +171,7 @@ async function load_buttons(start, end, chosen = null) {
     let btnprev = document.createElement('button');
     btnprev.classList.add(
         'text-sm', 'font-semibold', 'border-b-2', 'border-transparent',
-        'px-4', 'py-2', 'duration-300', 'hover:border-slate-500/25'
+        'px-4', 'py-2', 'duration-300', 'hover:border-rose-500/25'
     );
     btnprev.innerHTML = icons.backward('fill-slate-950 inline h-5 w-5 dark:fill-white');
 
@@ -202,7 +202,7 @@ async function load_buttons(start, end, chosen = null) {
             'px-4', 'py-2', 'duration-300'
         );
         if (chosen === i) btngrp.classList.add('border-rose-500');
-        else btngrp.classList.add('border-transparent', 'hover:border-slate-500/25');
+        else btngrp.classList.add('border-transparent', 'hover:border-rose-500/25');
 
         btngrp.innerText = groups[i];
 

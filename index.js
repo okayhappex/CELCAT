@@ -308,7 +308,7 @@ async function charger_calendrier(grp, add = 0, range = 5) {
 
         let elbox = document.createElement('div');
         elbox.classList.add(
-            'flex', `bg-${colors[_evtype]}/5`, 'rounded-xl', 'p-2',
+            'flex', `bg-${colors[_evtype]}/10`, 'rounded-xl', 'p-2',
             'h-full', 'duration-300', `hover:bg-${colors[_evtype]}/15`
         );
         elbox.id = 'cours_' + _id;
@@ -337,5 +337,6 @@ async function fstload() {
     }
 
 }
+
 
 

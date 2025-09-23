@@ -252,7 +252,7 @@ async function charger_calendrier(grp, add = 0, range = 5) {
     for (const event of data) {
         let _evtype = 'UNKNOWN';
         if (new Date(event.start) <= new Date()) {
-            if (new Date(event.start) <= new Date()) _evtype = 'PAST';
+            if (new Date(event.end) <= new Date()) _evtype = 'PAST';
             else _evtype = 'CURR';
         }
         else if (event.summary.includes('Cours Magistraux')) _evtype = 'CM';
@@ -341,6 +341,7 @@ async function fstload() {
     }
 
 }
+
 
 
 

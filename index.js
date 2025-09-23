@@ -251,7 +251,7 @@ async function charger_calendrier(grp, add = 0, range = 5) {
 
     for (const event of data) {
         let _evtype = 'UNKNOWN';
-        if (new Date(event.end) <= new Date()) _evtype = 'CURR';
+        if (new Date(event.end) <= new Date()) _evtype = 'PAST';
         else if (event.summary.includes('Cours Magistraux')) _evtype = 'CM';
         else if (event.summary.includes('Travaux Dirigés')) _evtype = 'TD';
         else if (event.summary.includes('DS')) _evtype = 'DS';
@@ -294,11 +294,11 @@ async function charger_calendrier(grp, add = 0, range = 5) {
         eldate.classList.add(`text-${colors[_evtype]}`, 'block', 'text-2xs', 'font-semibold');
 
         if (_running) {
-            eldate.innerText = `${_evstart.toLocaleTimeString('fr-FR').slice(0, 5)}-${_evend.toLocaleTimeString('fr-FR').slice(0, 5)} | ${event.location || 'Salle Inconnue'}`;
+            eldate.innerText = `• EN COURS | ${event.location || 'Salle Inconnue'}`;
             eltitle.classList.add(`text-${colors[_evtype]}`);
             elprof.classList.add(`text-${colors[_evtype]}`);
         } else {
-            eldate.innerText = `• EN COURS | ${event.location || 'Salle Inconnue'}`;
+            eldate.innerText = `${_evstart.toLocaleTimeString('fr-FR').slice(0, 5)}-${_evend.toLocaleTimeString('fr-FR').slice(0, 5)} | ${event.location || 'Salle Inconnue'}`;
         }
 
         const duration = (_evend - _evstart) / 1000 / 60;
@@ -345,6 +345,7 @@ async function fstload() {
     }
 
 }
+
 
 
 

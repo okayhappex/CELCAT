@@ -251,10 +251,7 @@ async function charger_calendrier(grp, add = 0, range = 5) {
 
     for (const event of data) {
         let _evtype = 'UNKNOWN';
-        if (new Date(event.start) <= new Date()) {
-            if (new Date(event.end) <= new Date()) _evtype = 'PAST';
-            else _evtype = 'CURR';
-        }
+        if (new Date(event.end) <= new Date()) _evtype = 'CURR';
         else if (event.summary.includes('Cours Magistraux')) _evtype = 'CM';
         else if (event.summary.includes('Travaux Dirigés')) _evtype = 'TD';
         else if (event.summary.includes('DS')) _evtype = 'DS';
@@ -263,6 +260,7 @@ async function charger_calendrier(grp, add = 0, range = 5) {
 
         let _evstart = new Date(event.start);
         let _evend = new Date(event.end);
+        _running = new Date(event.start) <= new Date() && new Date <= new Date(event.end)
 
         let col = range === 5
             ? (_evstart.getDay() === range ? range : _evstart.getDay() % range)
@@ -270,6 +268,16 @@ async function charger_calendrier(grp, add = 0, range = 5) {
 
         let row = _evstart.getHours() * 100 + Math.round(_evstart.getMinutes() / 6) * 10;
         let _id = range === 1 ? row.toString() : `${col}-${row}`;
+
+        const colors = {
+            'PAST': 'slate-500',
+            'CM': 'fuchsia-600',
+            'TD': 'emerald-500',
+            'TP': 'indigo-700',
+            'DS': 'red-400',
+            'TUT': 'rose-500',
+            'UNKNOWN': 'slate-500'
+        };
 
 
         // Contenu des cours
@@ -282,9 +290,16 @@ async function charger_calendrier(grp, add = 0, range = 5) {
         elprof.classList.add('block', 'text-xs', 'font-medium');
 
         let eldate = document.createElement('span');
-        eldate.innerText =
-            `${_evstart.toLocaleTimeString('fr-FR').slice(0, 5)}-${_evend.toLocaleTimeString('fr-FR').slice(0, 5)} | ${event.location || 'Salle Inconnue'}`;
-        eldate.classList.add('block', 'text-2xs', 'font-semibold');
+        
+        eldate.classList.add(`text-${colors[_evtype]}`, 'block', 'text-2xs', 'font-semibold');
+
+        if (_running) {
+            eldate.innerText = `${_evstart.toLocaleTimeString('fr-FR').slice(0, 5)}-${_evend.toLocaleTimeString('fr-FR').slice(0, 5)} | ${event.location || 'Salle Inconnue'}`;
+            eltitle.classList.add(`text-${colors[_evtype]}`);
+            elprof.classList.add(`text-${colors[_evtype]}`);
+        } else {
+            eldate.innerText = `• EN COURS | ${event.location || 'Salle Inconnue'}`;
+        }
 
         const duration = (_evend - _evstart) / 1000 / 60;
         const size = Math.round(duration / 3.75).toString();
@@ -295,17 +310,6 @@ async function charger_calendrier(grp, add = 0, range = 5) {
         if (size > 12) elcontent.appendChild(eldate);
         elcontent.appendChild(eltitle);
         if (size > 16) elcontent.appendChild(elprof);
-
-        const colors = {
-            'CURR': 'cyan-400',
-            'PAST': 'slate-500',
-            'CM': 'fuchsia-600',
-            'TD': 'emerald-500',
-            'TP': 'indigo-700',
-            'DS': 'red-400',
-            'TUT': 'rose-500',
-            'UNKNOWN': 'slate-500'
-        };
 
         let eltag = document.createElement('div');
         eltag.classList.add(`bg-${colors[_evtype]}`, 'rounded-full', 'p-1');
@@ -341,6 +345,7 @@ async function fstload() {
     }
 
 }
+
 
 
 

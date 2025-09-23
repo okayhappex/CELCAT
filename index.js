@@ -220,7 +220,12 @@ async function load_buttons(start, end, chosen = null) {
 async function charger_calendrier(grp, add = 0, range = 5) {
     if (grp !== -1) GRPSCOPE = grp;
 
-    CALSCOPE.setDate(CALSCOPE.getDate() + add);
+    if (range == 5) {
+        diff = CALSCOPE.getDate() - CALSCOPE.getDay() + 1;
+        CALSCOPE.setDate(diff + add);
+    } else {
+        CALSCOPE.setDate(CALSCOPE.getDate() + add);
+    }
 
     const urls = [
         'G1-QJ2DMFYC5987', // MMI1-A1
@@ -332,3 +337,4 @@ async function fstload() {
     }
 
 }
+

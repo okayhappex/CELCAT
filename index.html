@@ -5,22 +5,67 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Calendrier plus beau que CELCAT</title>
         <link rel="stylesheet" href="style.css" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet" />
+
         <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    fontFamily: {
+                        'sans': ['"Varela Round"', 'sans-serif']
+                    }
+                }
+            }
+        </script>
         <script src="./index.js"></script>
     </head>
-    <body onload="fstload()" class="select-none space-y-8 sm:px-16 sm:py-8 dark:bg-slate-950 dark:text-white">
-        <div class="px-8 pt-8">
-            <h1 class="text-center text-3xl font-bold">Calendrier plus beau que CELCAT</h1>
-        </div>
-        <div class="text-center space-y-2">
-            <div id="btnskip" class="space-x-0.5">
+    <body onload="fstload()" class="font-sans select-none space-y-8 sm:px-16 sm:py-8 dark:bg-slate-950 dark:text-white">
+        <div class="px-8 pt-8 space-y-4">
+            <div class="flex place-content-center">
+                <div id="btnskip" class="space-x-0.5"></div>
             </div>
-            <div id="btngrp" class="space-x-0.5">
+            <div class="flex place-content-center space-x-4">
+                <select class="appearance-none bg-slate-100 text-sm font-semibold rounded-full outline-none px-4 dark:bg-slate-900" onchange="load_buttons(parseInt(this.value, 10), parseInt(this.value, 10) + 4, -1)">
+                    <option value="0">MMI-1</option>
+                    <option value="4">MMI-2</option>
+                </select>
+                <div id="btngrp" class="space-x-0.5"></div>
             </div>
         </div>
 
-        <div class="max-sm:pr-8">
-            <div id="timetable" class="flex">
+        <div>
+            <div id="slowMessage" class="hidden text-center text-lg font-semibold p-8 pt-0">Ton emploi du temps plus beau que CELCAT est en train de charger...</div>
+            <div id="timetable" class="flex max-sm:pr-8"></div>
+            <div id="legend" class="p-8 space-y-2 md:pb-0">
+                <div class="place-content-center max-sm:overflow-x-auto max-md:space-y-1 md:flex md:space-x-2">
+                    <div class="inline-flex bg-slate-500/15 rounded-full px-2 py-1 space-x-1.5">
+                        <div class="bg-slate-500 rounded-full w-2 h-2 my-auto"></div>
+                        <div class="text-slate-500 text-sm font-semibold">Terminé / Inconnu</div>
+                    </div>
+                    <div class="inline-flex bg-fuchsia-600/15 rounded-full px-2 py-1 space-x-1.5">
+                        <div class="bg-fuchsia-600 rounded-full w-2 h-2 my-auto"></div>
+                        <div class="text-fuchsia-600 text-sm font-semibold">CM</div>
+                    </div>
+                    <div class="inline-flex bg-emerald-500/15 rounded-full px-2 py-1 space-x-1.5">
+                        <div class="bg-emerald-500 rounded-full w-2 h-2 my-auto"></div>
+                        <div class="text-emerald-500 text-sm font-semibold">TD</div>
+                    </div>
+                    <div class="inline-flex bg-indigo-700/15 rounded-full px-2 py-1 space-x-1.5">
+                        <div class="bg-indigo-700 rounded-full w-2 h-2 my-auto"></div>
+                        <div class="text-indigo-700 text-sm font-semibold">TP</div>
+                    </div>
+                    <div class="inline-flex bg-rose-500/15 rounded-full px-2 py-1 space-x-1.5">
+                        <div class="bg-rose-500 rounded-full w-2 h-2 my-auto"></div>
+                        <div class="text-rose-500 text-sm font-semibold">DS</div>
+                    </div>
+                    <div class="inline-flex bg-violet-500/15 rounded-full px-2 py-1 space-x-1.5">
+                        <div class="bg-violet-500 rounded-full w-2 h-2 my-auto"></div>
+                        <div class="text-violet-500 text-sm font-semibold">Projet tutore</div>
+                    </div>
+                </div>
             </div>
         </div>
     </body>

@@ -177,34 +177,44 @@ async function load_buttons(start, end, chosen = null) {
 
     btnprev.onclick = async () => {
         await charger_calendrier(-1, -add, range);
+        await load_buttons(start, end, chosen);
     }
 
     let btnnext = document.createElement('button');
     btnnext.classList.add(
         'text-sm', 'font-semibold', 'border-b-2', 'border-transparent',
-        'px-4', 'py-2', 'duration-300', 'hover:border-slate-500/25'
+        'px-4', 'py-2', 'duration-300', 'hover:border-rose-500/25'
     );
     btnnext.innerHTML = icons.forward('fill-slate-950 inline h-5 w-5 dark:fill-white');
 
     btnnext.onclick = async () => {
         await charger_calendrier(-1, add, range);
+        await load_buttons(start, end, chosen);
     }
 
+    let inputdate = document.createElement('input');
+    inputdate.type = 'date'
+    inputdate.lang = 'fr'
+    inputdate.classList.add('appearance-none', 'bg-slate-100', 'text-center', 'text-sm', 'font-semibold', 'rounded-full', 'outline-none', 'px-4', 'py-2', 'dark:bg-slate-900')
+    inputdate.valueAsDate = CALSCOPE
 
-    grpdiv.appendChild(btnprev);
+    skipdiv.appendChild(btnprev);
+    skipdiv.appendChild(inputdate);
+    skipdiv.appendChild(btnnext);
 
     const groups = ['A1', 'A2', 'B1', 'B2'];
+    if ((end - start) > groups.length) end = start + groups.length
 
-    for (let i = 0; i < groups.length; i++) {
+    for (let i = start; i < end; i++) {
         let btngrp = document.createElement('button');
         btngrp.classList.add(
             'text-sm', 'font-semibold', 'border-b-2',
             'px-4', 'py-2', 'duration-300'
         );
-        if (chosen === i) btngrp.classList.add('border-rose-500');
+        if (chosen === i) btngrp.classList.add('text-rose-500', 'border-rose-500');
         else btngrp.classList.add('border-transparent', 'hover:border-rose-500/25');
 
-        btngrp.innerText = groups[i];
+        btngrp.innerText = groups[i - start];
 
         btngrp.onclick = async () => {
             await charger_calendrier(i, 0, range);
@@ -213,11 +223,12 @@ async function load_buttons(start, end, chosen = null) {
 
         grpdiv.appendChild(btngrp);
     }
-
-    grpdiv.appendChild(btnnext);
 }
 
 async function charger_calendrier(grp, add = 0, range = 5) {
+    document.getElementById('slowMessage').innerText = 'Ton emploi du temps plus beau que CELCAT est en train de charger...';
+    document.getElementById('slowMessage').classList.remove('hidden');
+
     if (grp !== -1) GRPSCOPE = grp;
 
     if (range == 5) {
@@ -225,15 +236,21 @@ async function charger_calendrier(grp, add = 0, range = 5) {
         CALSCOPE.setDate(diff + add);
     } else {
         CALSCOPE.setDate(CALSCOPE.getDate() + add);
+        if (CALSCOPE.getDay() == 7) CALSCOPE.setDate(CALSCOPE.getDate() + 1);
     }
 
     const urls = [
         'G1-QJ2DMFYC5987', // MMI1-A1
         'G1-PW2GUKMM5988', // MMI1-A2
         'G1-HN2CHYNX5990', // MMI1-B1
-        'G1-QW2SJTJH5991'  // MMI1-B2
-        // etc.
+        'G1-QW2SJTJH5991', // MMI1-B2
+        'G1-QS2QEJVB5994', // MMI2-A1
+        'G1-EG2LDXAM5995', // MMI2-A2
+        'G1-AE2BGJHX5997', // MMI2-B1
+        'G1-TM2VJCBU5998' // MMI2-B2
     ];
+
+    console.log('Loading for group index ' + GRPSCOPE);
 
     const fstart = CALSCOPE.toISOString().split('T')[0];
 
@@ -244,7 +261,26 @@ async function charger_calendrier(grp, add = 0, range = 5) {
     const url = `${BASEURL}/${urls[GRPSCOPE]}?start=${fstart}&end=${fend}`;
     console.log(url);
 
-    const res = await fetch(url);
+    let finished = false;
+
+    setTimeout(() => {
+        if (!finished) document.getElementById('slowMessage').innerText = "Ça prend un peu plus de temps que prévu...";
+    }, 5000);
+
+    setTimeout(() => {
+        if (!finished) document.getElementById('slowMessage').innerText = "Patience, ça peut prendre du temps...";
+    }, 15000);
+
+    setTimeout(() => {
+        if (!finished) document.getElementById('slowMessage').innerText = "T'es toujours là ?";
+    }, 30000);
+
+    setTimeout(() => {
+        if (!finished) document.getElementById('slowMessage').innerText = "Il semble que le serveur ait lâché l'affaire.";
+    }, 60000);
+
+    const res = await fetch(url)
+    finished = true;
     const data = await res.json();
 
     precharger(range, fstart);
@@ -274,8 +310,8 @@ async function charger_calendrier(grp, add = 0, range = 5) {
             'CM': 'fuchsia-600',
             'TD': 'emerald-500',
             'TP': 'indigo-700',
-            'DS': 'red-400',
-            'TUT': 'rose-500',
+            'DS': 'rose-500',
+            'TUT': 'violet-500',
             'UNKNOWN': 'slate-500'
         };
 
@@ -290,13 +326,14 @@ async function charger_calendrier(grp, add = 0, range = 5) {
         elprof.classList.add('block', 'text-xs', 'font-medium');
 
         let eldate = document.createElement('span');
-        
+
         eldate.classList.add(`text-${colors[_evtype]}`, 'block', 'text-2xs', 'font-semibold');
 
         if (_running) {
-            eldate.innerText = `• EN COURS | ${event.location || 'Salle Inconnue'}`;
             eltitle.classList.add(`text-${colors[_evtype]}`);
             elprof.classList.add(`text-${colors[_evtype]}`);
+            eldate.classList.add('animate-pulse', 'font-extrabold');
+            eldate.innerText = `EN COURS | ${event.location || 'Salle Inconnue'}`;
         } else {
             eldate.innerText = `${_evstart.toLocaleTimeString('fr-FR').slice(0, 5)}-${_evend.toLocaleTimeString('fr-FR').slice(0, 5)} | ${event.location || 'Salle Inconnue'}`;
         }
@@ -316,7 +353,7 @@ async function charger_calendrier(grp, add = 0, range = 5) {
 
         let elbox = document.createElement('div');
         elbox.classList.add(
-            'flex', `bg-${colors[_evtype]}/10`, 'rounded-xl', 'p-2',
+            'flex', `bg-${colors[_evtype]}/5`, 'rounded-xl', 'p-2',
             'h-full', 'duration-300', `hover:bg-${colors[_evtype]}/15`
         );
         elbox.id = 'cours_' + _id;
@@ -333,6 +370,8 @@ async function charger_calendrier(grp, add = 0, range = 5) {
         let target = document.getElementById(_id);
         if (target) target.appendChild(elcontainer);
     }
+
+    document.getElementById('slowMessage').classList.add('hidden');
 }
 
 async function fstload() {

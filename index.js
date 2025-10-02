@@ -195,7 +195,7 @@ async function load_buttons(start, end, chosen = null) {
     let inputdate = document.createElement('input');
     inputdate.type = 'date'
     inputdate.lang = 'fr'
-    inputdate.classList.add('bg-slate-100', 'text-center', 'text-sm', 'font-semibold', 'rounded-full', 'outline-none', 'px-4', 'py-2', 'dark:bg-slate-900')
+    inputdate.classList.add('bg-slate-100', 'text-sm', 'font-semibold', 'rounded-full', 'outline-none', 'px-4', 'py-2', 'dark:bg-slate-900')
     inputdate.valueAsDate = CALSCOPE
 
     skipdiv.appendChild(btnprev);

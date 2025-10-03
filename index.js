@@ -226,8 +226,8 @@ async function load_buttons(start, end, chosen = null) {
 }
 
 async function charger_calendrier(grp, add = 0, range = 5) {
-    document.getElementById('slowMessage').innerText = 'Ton emploi du temps plus beau que CELCAT est en train de charger...';
-    document.getElementById('slowMessage').classList.remove('hidden');
+    document.getElementById('slowMessage').innerText = '';
+    document.getElementById('loading').classList.remove('hidden');
 
     if (grp !== -1) GRPSCOPE = grp;
 
@@ -265,10 +265,6 @@ async function charger_calendrier(grp, add = 0, range = 5) {
 
     setTimeout(() => {
         if (!finished) document.getElementById('slowMessage').innerText = "Ça prend un peu plus de temps que prévu...";
-    }, 5000);
-
-    setTimeout(() => {
-        if (!finished) document.getElementById('slowMessage').innerText = "Patience, ça peut prendre du temps...";
     }, 15000);
 
     setTimeout(() => {
@@ -354,8 +350,12 @@ async function charger_calendrier(grp, add = 0, range = 5) {
         let elbox = document.createElement('div');
         elbox.classList.add(
             'flex', `bg-${colors[_evtype]}/5`, 'rounded-xl', 'p-2',
-            'h-full', 'duration-300', `hover:bg-${colors[_evtype]}/15`
+            'h-full', 'duration-300'
         );
+
+        if (_evtype == 'PAST') elbox.disabled = true;
+        else elbox.classList.add(`hover:bg-${colors[_evtype]}/15`);
+
         elbox.id = 'cours_' + _id;
 
         elbox.appendChild(eltag);
@@ -371,7 +371,7 @@ async function charger_calendrier(grp, add = 0, range = 5) {
         if (target) target.appendChild(elcontainer);
     }
 
-    document.getElementById('slowMessage').classList.add('hidden');
+    document.getElementById('loading').classList.add('hidden');
 }
 
 async function fstload() {

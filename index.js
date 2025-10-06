@@ -41,8 +41,8 @@ async function precharger(range = 5, fstart) {
 
     const _HRS = [
         '',
-        '8h00', '9h00', '10h00', '11h00', '12h00', '13h00', '14h00',
-        '15h00', '16h00', '17h00', '18h00', '19h00', '20h00'
+        '7h', '8h', '9h', '10h', '11h', '12h', '13h',
+        '14h', '15h', '16h', '17h', '18h', '19h', '20h'
     ];
 
     const DAYS = [
@@ -55,58 +55,54 @@ async function precharger(range = 5, fstart) {
         day.classList.add(col === 0 ? 'w-24' : 'flex-1')
         if (range == 5) day.classList.add('border-r', 'border-slate-500/15');
 
-        for (let row = 0; row < 25; row++) {
+        for (let row = 0; row < 54; row++) {
             if (col === 0) {
-                if (row <= 12) {
-                    let _id = 'h-' + (750 + row * 50).toString();
+                /* Horaires */
 
-                    let hour = document.createElement('div');
-                    hour.id = _id;
+                let _id = 'h-' + (600 + row * 100).toString();
+                let hour = document.createElement('div');
 
+                hour.id = _id;
+
+                if (row === 0) {
+                    hour.classList.add('flex', 'items-center', 'h-8', 'z-50');
+
+                    day.appendChild(hour);
+                } else if (row <= 13) {    
                     let _label = document.createElement('div');
 
                     let span = document.createElement('span');
-                    span.innerText = _HRS[row];
+                    span.innerText = _HRS[row] + "00";
                     span.classList.add('grow', 'px-4');
 
-                    if (row === 0) {
-                        span.classList.add('font-bold', 'text-center');
-                    } else {
-                        span.classList.add(
-                            'text-slate-700', 'text-sm', 'text-right',
-                            'font-semibold', 'dark:text-slate-300'
-                        );
-                    }
-
                     let span2 = document.createElement('span');
-                    span2.innerText = _HRS[row + 1];
+
+                    span.classList.add(
+                        'text-slate-700', 'text-sm', 'text-right',
+                        'font-semibold', 'dark:text-slate-300'
+                    );
+
+                    span2.innerText = _HRS[row] + "30";
                     span2.classList.add('grow', 'px-4');
 
-                    if (row === 0) {
-                        span2.classList.add('font-bold', 'text-center');
-                    } else {
-                        span2.classList.add(
-                            'text-slate-500', 'text-xs', 'text-right',
-                            'font-medium', 'dark:text-slate-500'
-                        );
-                    }
+                    span2.classList.add(
+                        'text-slate-500', 'text-xs', 'text-right',
+                        'font-medium', 'dark:text-slate-500'
+                    );
 
-                    if (row == 0) {
-                        hour.appendChild(span);
-                        hour.classList.add('flex', 'items-center', 'h-16', 'z-50');
-                    } else {
-                        _label.appendChild(span);
-                        _label.appendChild(span2);
+                    _label.appendChild(span);
+                    _label.appendChild(span2);
 
-                        _label.classList.add('flex', 'flex-col', 'w-full');
-                        hour.classList.add('flex', 'items-center', 'h-16', 'z-50');
-                        hour.appendChild(_label);
-                    }
+                    _label.classList.add('flex', 'flex-col', 'w-full');
+                    hour.classList.add('flex', 'items-center', 'h-16', 'z-50');
+                    hour.appendChild(_label);
 
                     day.appendChild(hour);
                 }
             } else {
                 if (row === 0) {
+                    /* Ligne des jours */
+
                     let _id = range === 1
                         ? DAYS[new Date(_start).getDay() - 1]
                         : DAYS[col - 1];
@@ -125,23 +121,25 @@ async function precharger(range = 5, fstart) {
 
                     hour.classList.add(
                         'flex', 'items-center',
-                        'h-16', 'z-50'
+                        'h-8', 'z-50'
                     );
 
                     /*if (range == 5)*/ hour.classList.add('border-b', 'border-slate-500/5');
 
                     day.appendChild(hour);
                 } else {
+                    /* Grille des cours */
+
                     let _id = range === 1
-                        ? (750 + row * 50).toString()
-                        : col.toString() + '-' + (750 + row * 50).toString();
+                        ? (675 + row * 25).toString()
+                        : col.toString() + '-' + (675 + row * 25).toString();
 
                     let hour = document.createElement('div');
                     hour.id = _id;
 
                     let __border = row % 2 === 1 ? 'border-transparent' : 'border-slate-500/5';
-                    hour.classList.add('h-8', 'z-50');
-                    /*if (range == 5)*/ hour.classList.add('border-b', __border);
+                    hour.classList.add('h-4', 'z-50');
+                    if (row % 4 == 0) hour.classList.add('border-b', __border);
 
                     day.appendChild(hour);
                 }
@@ -236,8 +234,10 @@ async function charger_calendrier(grp, add = 0, range = 5) {
         CALSCOPE.setDate(diff + add);
     } else {
         CALSCOPE.setDate(CALSCOPE.getDate() + add);
-        if (CALSCOPE.getDay() == 7) CALSCOPE.setDate(CALSCOPE.getDate() + 1);
     }
+
+    if (CALSCOPE.getDay() == 7) CALSCOPE.setDate(CALSCOPE.getDate() + 1);
+
 
     const urls = [
         'G1-QJ2DMFYC5987', // MMI1-A1
@@ -292,14 +292,15 @@ async function charger_calendrier(grp, add = 0, range = 5) {
 
         let _evstart = new Date(event.start);
         let _evend = new Date(event.end);
-        _running = new Date(event.start) <= new Date() && new Date <= new Date(event.end)
+        _running = new Date(event.start) <= new Date() && new Date() <= new Date(event.end)
 
         let col = range === 5
             ? (_evstart.getDay() === range ? range : _evstart.getDay() % range)
             : 1;
 
-        let row = _evstart.getHours() * 100 + Math.round(_evstart.getMinutes() / 6) * 10;
+        let row = _evstart.getHours() * 100 + (_evstart.getMinutes() / 60 * 100);
         let _id = range === 1 ? row.toString() : `${col}-${row}`;
+        console.log(_id)
 
         const colors = {
             'PAST': 'slate-500',
